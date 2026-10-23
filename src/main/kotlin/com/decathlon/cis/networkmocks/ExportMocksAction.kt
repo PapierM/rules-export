@@ -15,9 +15,12 @@ import org.jdom.Element
 import org.jdom.input.SAXBuilder
 import org.jdom.output.Format
 import org.jdom.output.XMLOutputter
+import java.awt.BorderLayout
+import java.awt.FlowLayout
 import java.awt.GridLayout
 import java.io.File
 import java.io.FileOutputStream
+import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -97,11 +100,22 @@ class RuleSelectionDialog(private val rules: List<Element>) : DialogWrapper(true
                 }
             }
 
-            val checkBox = JBCheckBox(ruleName, true)
+            val checkBox = JBCheckBox(ruleName, false)
             checkBoxes.add(Pair(checkBox, rule))
             panel.add(checkBox)
         }
-        return JBScrollPane(panel)
+        val selectionButtons = JPanel(FlowLayout(FlowLayout.LEADING)).apply {
+            add(JButton("Sélectionner tous").apply {
+                addActionListener { checkBoxes.forEach { it.first.isSelected = true } }
+            })
+            add(JButton("Désélectionner tous").apply {
+                addActionListener { checkBoxes.forEach { it.first.isSelected = false } }
+            })
+        }
+        return JPanel(BorderLayout()).apply {
+            add(selectionButtons, BorderLayout.NORTH)
+            add(JBScrollPane(panel), BorderLayout.CENTER)
+        }
     }
 
     fun getSelectedRules(): List<Element> {
