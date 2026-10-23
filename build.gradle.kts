@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.decathlon.cis"
-version = "1.0.5"
+version = "1.0.6"
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
