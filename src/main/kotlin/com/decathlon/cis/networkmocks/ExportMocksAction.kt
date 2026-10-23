@@ -31,7 +31,7 @@ class ExportMocksAction : AnAction() {
         val workspaceFile = File("$basePath/.idea/workspace.xml")
 
         if (!workspaceFile.exists()) {
-            showNotification(project, "Fichier workspace.xml introuvable.", NotificationType.ERROR)
+            showNotification(project, NetworkMocksBundle.message("export.workspace.missing"), NotificationType.ERROR)
             return
         }
 
@@ -44,12 +44,12 @@ class ExportMocksAction : AnAction() {
             if (rulesList.isEmpty() && rootNode.getChildren("component").none {
                     it.getAttributeValue("name") == "NetworkInspectorRules"
                 }) {
-                showNotification(project, "Aucune configuration de NetworkInspectorRules trouvée.", NotificationType.WARNING)
+                showNotification(project, NetworkMocksBundle.message("export.configuration.missing"), NotificationType.WARNING)
                 return
             }
 
             if (rulesList.isEmpty()) {
-                showNotification(project, "Aucun mock trouvé.", NotificationType.WARNING)
+                showNotification(project, NetworkMocksBundle.message("export.rules.empty"), NotificationType.WARNING)
                 return
             }
 
@@ -58,7 +58,11 @@ class ExportMocksAction : AnAction() {
                 val selectedRules = dialog.getSelectedRules()
                 if (selectedRules.isEmpty()) return
 
-                val descriptor = FileSaverDescriptor("Exporter les Mocks", "Sauvegarder les règles", "xml")
+                val descriptor = FileSaverDescriptor(
+                    NetworkMocksBundle.message("export.dialog.title"),
+                    NetworkMocksBundle.message("export.dialog.description"),
+                    "xml"
+                )
                 val saveDialog = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, project)
                 val baseDir = LocalFileSystem.getInstance().findFileByPath(basePath)
                 val fileWrapper = saveDialog.save(baseDir, "network-mocks.xml") ?: return
@@ -68,10 +72,10 @@ class ExportMocksAction : AnAction() {
                     outputter.output(NetworkMocksXml.createExportDocument(selectedRules), fos)
                 }
 
-                showNotification(project, "${selectedRules.size} mock(s) exporté(s) !", NotificationType.INFORMATION)
+                showNotification(project, NetworkMocksBundle.message("export.success", selectedRules.size), NotificationType.INFORMATION)
             }
         } catch (ex: Exception) {
-            showNotification(project, "Erreur lors de l'export: ${ex.message}", NotificationType.ERROR)
+            showNotification(project, NetworkMocksBundle.message("export.error", ex.message ?: ex.toString()), NotificationType.ERROR)
         }
     }
 
@@ -84,7 +88,7 @@ class RuleSelectionDialog(private val rules: List<Element>) : DialogWrapper(true
     private val checkBoxes = mutableListOf<Pair<JBCheckBox, Element>>()
 
     init {
-        title = "Sélectionner les Mocks à Exporter"
+        title = NetworkMocksBundle.message("selection.dialog.title")
         init()
     }
 
@@ -92,7 +96,7 @@ class RuleSelectionDialog(private val rules: List<Element>) : DialogWrapper(true
         val panel = JPanel(GridLayout(0, 1))
         rules.forEach { rule ->
             // Extraction du nom de la règle depuis la balise <option name="name" value="Mon Mock" />
-            var ruleName = "Mock sans nom"
+            var ruleName = NetworkMocksBundle.message("selection.rule.unnamed")
             for (child in rule.children) {
                 if (child.name == "option" && child.getAttributeValue("name") == "name") {
                     ruleName = child.getAttributeValue("value") ?: ruleName
@@ -105,10 +109,10 @@ class RuleSelectionDialog(private val rules: List<Element>) : DialogWrapper(true
             panel.add(checkBox)
         }
         val selectionButtons = JPanel(FlowLayout(FlowLayout.LEADING)).apply {
-            add(JButton("Sélectionner tous").apply {
+            add(JButton(NetworkMocksBundle.message("selection.select.all")).apply {
                 addActionListener { checkBoxes.forEach { it.first.isSelected = true } }
             })
-            add(JButton("Désélectionner tous").apply {
+            add(JButton(NetworkMocksBundle.message("selection.deselect.all")).apply {
                 addActionListener { checkBoxes.forEach { it.first.isSelected = false } }
             })
         }

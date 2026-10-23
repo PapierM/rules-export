@@ -1,16 +1,18 @@
 # rules-export — Team Network Mocks Sync
 
-> **Travail en cours :** le plugin est toujours en développement. La génération et la publication des versions devront être mises en place prochainement. En attendant, l'installation se fait à partir d'une archive ZIP générée localement ou fournie par le propriétaire du dépôt.
+**English** | [Français](README.fr.md)
 
-Ce plugin permet d'**exporter et d'importer les règles (rules) du Network Inspector d'Android Studio**. Il facilite le partage des mocks réseau entre les membres de l'équipe, via des fichiers XML qui peuvent être versionnés dans Git.
+> **Work in progress:** the plugin is still under development. Release generation and publishing still need to be set up. In the meantime, install it from a ZIP archive built locally or provided by the repository owner.
+
+This plugin lets you **export and import Android Studio Network Inspector rules**. It makes it easier to share network mocks with your team using XML files that can be versioned in Git.
 
 ## Installation
 
-La configuration actuelle du plugin cible les IDE de la branche de build `262` (`262.*`). Vérifiez le numéro de build de votre Android Studio dans **Help > About** (ou **Android Studio > About** sur macOS) avant l'installation.
+The current plugin configuration targets IDEs in build branch `262` (`262.*`). Check your Android Studio build number under **Help > About** (or **Android Studio > About** on macOS) before installing.
 
-### Obtenir l'archive du plugin
+### Get the plugin archive
 
-Demandez l'archive ZIP au propriétaire du dépôt ou générez-la depuis les sources :
+Ask the repository owner for the ZIP archive, or build it from source:
 
 ```bash
 git clone https://github.com/PapierM/rules-export.git
@@ -18,45 +20,49 @@ cd rules-export
 ./gradlew buildPlugin
 ```
 
-Sous Windows, utilisez `gradlew.bat buildPlugin`. L'archive générée se trouve dans `build/distributions/`.
+On Windows, use `gradlew.bat buildPlugin`. The generated archive is located in `build/distributions/`.
 
-### Installer dans Android Studio
+### Install in Android Studio
 
-1. Ouvrez **Settings > Plugins** (ou **Preferences > Plugins**, selon votre version).
-2. Cliquez sur l'icône d'engrenage, puis sur **Install Plugin from Disk...**.
-3. Sélectionnez l'archive ZIP du plugin, sans la décompresser.
-4. Validez l'installation et redémarrez Android Studio si cela vous est demandé.
+1. Open **Settings > Plugins** (or **Preferences > Plugins**, depending on your version).
+2. Click the gear icon, then **Install Plugin from Disk...**.
+3. Select the plugin ZIP archive without extracting it.
+4. Confirm the installation and restart Android Studio if prompted.
 
-Le plugin apparaît sous le nom **Team Network Mocks Sync**. Ses actions sont accessibles dans **Tools > Network Mocks**.
+The plugin appears as **Team Network Mocks Sync**. Its actions are available under **Tools > Network Mocks**.
 
-## Utilisation
+### Interface language
 
-Ouvrez le projet Android concerné dans Android Studio. Le plugin lit et modifie les règles enregistrées dans le fichier `.idea/workspace.xml` de ce projet.
+The plugin's menus, dialogs, buttons, and notifications automatically follow the Android Studio interface language: French or English. For other languages, the plugin defaults to English. No plugin-specific setting is required.
 
-### Exporter les règles du Network Inspector
+## Usage
 
-1. Créez ou configurez vos règles dans le **Network Inspector** d'Android Studio.
-2. Ouvrez **Tools > Network Mocks > Exporter les Mocks (IDE -> Git)**.
-3. Dans la fenêtre de sélection, cochez les règles à exporter, puis validez. Toutes les règles sont décochées par défaut. Les boutons **Sélectionner tous** et **Désélectionner tous** permettent de modifier toute la sélection en un clic.
-4. Choisissez l'emplacement du fichier XML. Le nom proposé est `network-mocks.xml`.
+Open the relevant Android project in Android Studio. The plugin reads and modifies the rules stored in that project's `.idea/workspace.xml` file.
 
-Une notification confirme le nombre de règles exportées. Vous pouvez ensuite partager ce fichier ou l'ajouter au dépôt Git de votre projet. Si aucune règle n'est enregistrée, le plugin affiche un avertissement.
+### Export Network Inspector rules
 
-### Importer les règles du Network Inspector
+1. Create or configure your rules in Android Studio's **Network Inspector**.
+2. Open **Tools > Network Mocks > Export Mocks (IDE -> Git)**.
+3. In the selection dialog, check the rules you want to export, then confirm. All rules are unchecked by default. The **Select all** and **Deselect all** buttons let you change the entire selection in one click.
+4. Choose where to save the XML file. The suggested filename is `network-mocks.xml`.
 
-1. Récupérez un fichier XML précédemment exporté avec le plugin.
-2. Ouvrez **Tools > Network Mocks > Importer les Mocks (Git -> IDE)**.
-3. Sélectionnez le fichier XML à importer.
-4. Consultez la notification indiquant le nombre de règles importées, puis ouvrez le **Network Inspector** pour les retrouver.
+A notification confirms the number of exported rules. You can then share the file or add it to your project's Git repository. If no rules are saved, the plugin displays a warning.
 
-Si les règles n'apparaissent pas, redémarrez Android Studio.
+### Import Network Inspector rules
 
-**Attention :** l'import ajoute les règles à celles déjà présentes, sans les remplacer ni supprimer les doublons. Importer plusieurs fois le même fichier peut donc créer des doublons.
+1. Get an XML file previously exported with the plugin.
+2. Open **Tools > Network Mocks > Import Mocks (Git -> IDE)**.
+3. Select the XML file to import.
+4. Read the notification showing the number of imported rules, then open the **Network Inspector** to find them.
 
-Les mentions « IDE -> Git » et « Git -> IDE » désignent le sens du partage : le plugin exporte et importe des fichiers XML, mais n'effectue pas de commit, de push ou de pull Git.
+If the rules do not appear, restart Android Studio.
 
-## Besoin d'aide ou envie d'améliorer le plugin ?
+**Warning:** importing appends rules to the existing ones without replacing them or removing duplicates. Importing the same file multiple times can therefore create duplicates.
 
-En cas de besoin, de problème ou d'envie de proposer une amélioration, contactez **[PapierM](https://github.com/PapierM)**, propriétaire du [dépôt GitHub](https://github.com/PapierM/rules-export).
+The labels "IDE -> Git" and "Git -> IDE" indicate the sharing direction: the plugin exports and imports XML files, but does not perform Git commits, pushes, or pulls.
 
-Pour développer une amélioration, il suffit de **créer une branche dédiée** depuis le dépôt, d'y apporter vos modifications, puis d'ouvrir une pull request pour les proposer au propriétaire.
+## Need help or want to improve the plugin?
+
+For help, issues, or improvement suggestions, contact **[PapierM](https://github.com/PapierM)**, owner of the [GitHub repository](https://github.com/PapierM/rules-export).
+
+To develop an improvement, **create a dedicated branch** from the repository, make your changes, and open a pull request to propose them to the owner.
