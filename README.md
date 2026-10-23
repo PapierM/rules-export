@@ -1,45 +1,62 @@
-# rules-export
+# rules-export — Team Network Mocks Sync
 
-![Build](https://github.com/PapierM/rules-export/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
+> **Travail en cours :** le plugin est toujours en développement. La génération et la publication des versions devront être mises en place prochainement. En attendant, l'installation se fait à partir d'une archive ZIP générée localement ou fournie par le propriétaire du dépôt.
 
-## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get familiar with the [template documentation][template].
-- [ ] Adjust the [group](./gradle.properties), as well as the [id](./src/main/resources/META-INF/plugin.xml), [name](./src/main/resources/META-INF/plugin.xml), and [sources package](./src/main/kotlin).
-- [ ] Adjust the plugin [description](./src/main/resources/META-INF/plugin.xml) (see [Tips][docs:plugin-description]) and this README to describe what your plugin does.
-- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html?from=IJPluginTemplate).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [ ] Set the `MARKETPLACE_ID` in the above README badges. You can obtain it once the plugin is published to JetBrains Marketplace.
-- [ ] Set the [Plugin Signing](https://plugins.jetbrains.com/docs/intellij/plugin-signing.html?from=IJPluginTemplate) related [secrets](https://github.com/JetBrains/intellij-platform-plugin-template#environment-variables).
-- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html?from=IJPluginTemplate).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
-
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
+Ce plugin permet d'**exporter et d'importer les règles (rules) du Network Inspector d'Android Studio**. Il facilite le partage des mocks réseau entre les membres de l'équipe, via des fichiers XML qui peuvent être versionnés dans Git.
 
 ## Installation
 
-- Using the IDE built-in plugin system:
+La configuration actuelle du plugin cible les IDE de la branche de build `262` (`262.*`). Vérifiez le numéro de build de votre Android Studio dans **Help > About** (ou **Android Studio > About** sur macOS) avant l'installation.
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "rules-export"</kbd> >
-  <kbd>Install</kbd>
+### Obtenir l'archive du plugin
 
-- Using JetBrains Marketplace:
+Demandez l'archive ZIP au propriétaire du dépôt ou générez-la depuis les sources :
 
-  Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID) and install it by clicking the <kbd>Install to ...</kbd> button in case your IDE is running.
+```bash
+git clone https://github.com/PapierM/rules-export.git
+cd rules-export
+./gradlew buildPlugin
+```
 
-  You can also download the [latest release](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID/versions) from JetBrains Marketplace and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
+Sous Windows, utilisez `gradlew.bat buildPlugin`. L'archive générée se trouve dans `build/distributions/`.
 
-- Manually:
+### Installer dans Android Studio
 
-  Download the [latest release](https://github.com/PapierM/rules-export/releases/latest) and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
+1. Ouvrez **Settings > Plugins** (ou **Preferences > Plugins**, selon votre version).
+2. Cliquez sur l'icône d'engrenage, puis sur **Install Plugin from Disk...**.
+3. Sélectionnez l'archive ZIP du plugin, sans la décompresser.
+4. Validez l'installation et redémarrez Android Studio si cela vous est demandé.
 
+Le plugin apparaît sous le nom **Team Network Mocks Sync**. Ses actions sont accessibles dans **Tools > Network Mocks**.
 
----
-Plugin based on the [IntelliJ Platform Plugin Template][template].
+## Utilisation
 
-[template]: https://github.com/JetBrains/intellij-platform-plugin-template
-[docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
+Ouvrez le projet Android concerné dans Android Studio. Le plugin lit et modifie les règles enregistrées dans le fichier `.idea/workspace.xml` de ce projet.
+
+### Exporter les règles du Network Inspector
+
+1. Créez ou configurez vos règles dans le **Network Inspector** d'Android Studio.
+2. Ouvrez **Tools > Network Mocks > Exporter les Mocks (IDE -> Git)**.
+3. Dans la fenêtre de sélection, conservez cochées les règles à exporter, puis validez. Toutes les règles sont cochées par défaut.
+4. Choisissez l'emplacement du fichier XML. Le nom proposé est `network-mocks.xml`.
+
+Une notification confirme le nombre de règles exportées. Vous pouvez ensuite partager ce fichier ou l'ajouter au dépôt Git de votre projet. Si aucune règle n'est enregistrée, le plugin affiche un avertissement.
+
+### Importer les règles du Network Inspector
+
+1. Récupérez un fichier XML précédemment exporté avec le plugin.
+2. Ouvrez **Tools > Network Mocks > Importer les Mocks (Git -> IDE)**.
+3. Sélectionnez le fichier XML à importer.
+4. Consultez la notification indiquant le nombre de règles importées, puis ouvrez le **Network Inspector** pour les retrouver.
+
+Si les règles n'apparaissent pas, redémarrez Android Studio.
+
+**Attention :** l'import ajoute les règles à celles déjà présentes, sans les remplacer ni supprimer les doublons. Importer plusieurs fois le même fichier peut donc créer des doublons.
+
+Les mentions « IDE -> Git » et « Git -> IDE » désignent le sens du partage : le plugin exporte et importe des fichiers XML, mais n'effectue pas de commit, de push ou de pull Git.
+
+## Besoin d'aide ou envie d'améliorer le plugin ?
+
+En cas de besoin, de problème ou d'envie de proposer une amélioration, contactez **[PapierM](https://github.com/PapierM)**, propriétaire du [dépôt GitHub](https://github.com/PapierM/rules-export).
+
+Pour développer une amélioration, il suffit de **créer une branche dédiée** depuis le dépôt, d'y apporter vos modifications, puis d'ouvrir une pull request pour les proposer au propriétaire.
