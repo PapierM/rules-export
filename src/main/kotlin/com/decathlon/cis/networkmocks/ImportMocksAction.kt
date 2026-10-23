@@ -21,7 +21,7 @@ class ImportMocksAction : AnAction() {
         val workspaceFile = File("$basePath/.idea/workspace.xml")
 
         val descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("xml").apply {
-            title = "Sélectionner le Fichier de Mocks à Importer"
+            title = NetworkMocksBundle.message("import.dialog.title")
         }
         val virtualFile = FileChooser.chooseFile(descriptor, project, null) ?: return
         val sourceGitFile = File(virtualFile.path)
@@ -33,7 +33,7 @@ class ImportMocksAction : AnAction() {
             val importedRules = NetworkMocksXml.importedRules(importDoc)
 
             if (importedRules.isEmpty()) {
-                showNotification(project, "Aucune règle trouvée dans le fichier d'import.", NotificationType.WARNING)
+                showNotification(project, NetworkMocksBundle.message("import.rules.empty"), NotificationType.WARNING)
                 return
             }
 
@@ -47,10 +47,10 @@ class ImportMocksAction : AnAction() {
             }
 
             LocalFileSystem.getInstance().refreshAndFindFileByIoFile(workspaceFile)?.refresh(false, false)
-            showNotification(project, "$addedCount mock(s) importé(s) ! (Redémarrez Android Studio si les règles n'apparaissent pas)", NotificationType.INFORMATION)
+            showNotification(project, NetworkMocksBundle.message("import.success", addedCount), NotificationType.INFORMATION)
 
         } catch (ex: Exception) {
-            showNotification(project, "Erreur d'import: ${ex.message}", NotificationType.ERROR)
+            showNotification(project, NetworkMocksBundle.message("import.error", ex.message ?: ex.toString()), NotificationType.ERROR)
         }
     }
 
