@@ -11,17 +11,18 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBScrollPane
-import org.jdom.Document
 import org.jdom.Element
 import org.jdom.input.SAXBuilder
 import org.jdom.output.Format
 import org.jdom.output.XMLOutputter
+import java.awt.BorderLayout
+import java.awt.FlowLayout
 import java.awt.GridLayout
 import java.io.File
 import java.io.FileOutputStream
+import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
-import kotlin.collections.iterator
 
 class ExportMocksAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -39,21 +40,12 @@ class ExportMocksAction : AnAction() {
             val doc = builder.build(workspaceFile)
             val rootNode = doc.rootElement
 
-            val rulesComponent = rootNode.getChildren("component").find {
-                it.getAttributeValue("name") == "NetworkInspectorRules"
-            }
-
-            if (rulesComponent == null) {
+            val rulesList = NetworkMocksXml.rulesForExport(doc)
+            if (rulesList.isEmpty() && rootNode.getChildren("component").none {
+                    it.getAttributeValue("name") == "NetworkInspectorRules"
+                }) {
                 showNotification(project, "Aucune configuration de NetworkInspectorRules trouvée.", NotificationType.WARNING)
                 return
-            }
-
-            // Récupère uniquement les balises RuleData
-            val rulesList = mutableListOf<Element>()
-            for (node in rulesComponent.descendants) {
-                if (node is Element && node.name == "RuleData") {
-                    rulesList.add(node)
-                }
             }
 
             if (rulesList.isEmpty()) {
@@ -71,14 +63,9 @@ class ExportMocksAction : AnAction() {
                 val baseDir = LocalFileSystem.getInstance().findFileByPath(basePath)
                 val fileWrapper = saveDialog.save(baseDir, "network-mocks.xml") ?: return
 
-                val exportRoot = Element("network-mocks")
-                selectedRules.forEach { rule ->
-                    exportRoot.addContent(rule.clone() as Element)
-                }
-
                 val outputter = XMLOutputter(Format.getPrettyFormat())
                 FileOutputStream(fileWrapper.file).use { fos ->
-                    outputter.output(Document(exportRoot), fos)
+                    outputter.output(NetworkMocksXml.createExportDocument(selectedRules), fos)
                 }
 
                 showNotification(project, "${selectedRules.size} mock(s) exporté(s) !", NotificationType.INFORMATION)
@@ -113,11 +100,22 @@ class RuleSelectionDialog(private val rules: List<Element>) : DialogWrapper(true
                 }
             }
 
-            val checkBox = JBCheckBox(ruleName, true)
+            val checkBox = JBCheckBox(ruleName, false)
             checkBoxes.add(Pair(checkBox, rule))
             panel.add(checkBox)
         }
-        return JBScrollPane(panel)
+        val selectionButtons = JPanel(FlowLayout(FlowLayout.LEADING)).apply {
+            add(JButton("Sélectionner tous").apply {
+                addActionListener { checkBoxes.forEach { it.first.isSelected = true } }
+            })
+            add(JButton("Désélectionner tous").apply {
+                addActionListener { checkBoxes.forEach { it.first.isSelected = false } }
+            })
+        }
+        return JPanel(BorderLayout()).apply {
+            add(selectionButtons, BorderLayout.NORTH)
+            add(JBScrollPane(panel), BorderLayout.CENTER)
+        }
     }
 
     fun getSelectedRules(): List<Element> {

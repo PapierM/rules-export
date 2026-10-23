@@ -37,7 +37,7 @@ Ouvrez le projet Android concerné dans Android Studio. Le plugin lit et modifie
 
 1. Créez ou configurez vos règles dans le **Network Inspector** d'Android Studio.
 2. Ouvrez **Tools > Network Mocks > Exporter les Mocks (IDE -> Git)**.
-3. Dans la fenêtre de sélection, conservez cochées les règles à exporter, puis validez. Toutes les règles sont cochées par défaut.
+3. Dans la fenêtre de sélection, cochez les règles à exporter, puis validez. Toutes les règles sont décochées par défaut. Les boutons **Sélectionner tous** et **Désélectionner tous** permettent de modifier toute la sélection en un clic.
 4. Choisissez l'emplacement du fichier XML. Le nom proposé est `network-mocks.xml`.
 
 Une notification confirme le nombre de règles exportées. Vous pouvez ensuite partager ce fichier ou l'ajouter au dépôt Git de votre projet. Si aucune règle n'est enregistrée, le plugin affiche un avertissement.
