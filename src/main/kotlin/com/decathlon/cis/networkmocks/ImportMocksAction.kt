@@ -8,7 +8,6 @@ import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
-import org.jdom.Element
 import org.jdom.input.SAXBuilder
 import org.jdom.output.Format
 import org.jdom.output.XMLOutputter
@@ -31,7 +30,7 @@ class ImportMocksAction : AnAction() {
             val builder = SAXBuilder()
 
             val importDoc = builder.build(sourceGitFile)
-            val importedRules = importDoc.rootElement.children
+            val importedRules = NetworkMocksXml.importedRules(importDoc)
 
             if (importedRules.isEmpty()) {
                 showNotification(project, "Aucune règle trouvée dans le fichier d'import.", NotificationType.WARNING)
@@ -40,38 +39,7 @@ class ImportMocksAction : AnAction() {
 
             val workspaceDoc = builder.build(workspaceFile)
             val rootNode = workspaceDoc.rootElement
-
-            // 1. Trouver ou créer <component name="NetworkInspectorRules">
-            var rulesComponent = rootNode.getChildren("component").find {
-                it.getAttributeValue("name") == "NetworkInspectorRules"
-            }
-            if (rulesComponent == null) {
-                rulesComponent = Element("component").setAttribute("name", "NetworkInspectorRules")
-                rootNode.addContent(rulesComponent)
-            }
-
-            // 2. Trouver ou créer <option name="rulesList">
-            var rulesListOption = rulesComponent.getChildren("option").find {
-                it.getAttributeValue("name") == "rulesList"
-            }
-            if (rulesListOption == null) {
-                rulesListOption = Element("option").setAttribute("name", "rulesList")
-                rulesComponent.addContent(rulesListOption)
-            }
-
-            // 3. Trouver ou créer <list>
-            var listElement = rulesListOption.getChild("list")
-            if (listElement == null) {
-                listElement = Element("list")
-                rulesListOption.addContent(listElement)
-            }
-
-            // 4. Injecter les RuleData dans <list>
-            var addedCount = 0
-            for (rule in importedRules) {
-                listElement.addContent(rule.clone() as Element)
-                addedCount++
-            }
+            val addedCount = NetworkMocksXml.appendImportedRules(rootNode, importedRules)
 
             val outputter = XMLOutputter(Format.getPrettyFormat())
             FileOutputStream(workspaceFile).use { fos ->
