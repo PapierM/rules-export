@@ -8,7 +8,7 @@ This plugin lets you **export and import Android Studio Network Inspector rules*
 
 ## Installation
 
-The current plugin configuration targets IDEs in build branch `262` (`262.*`). Check your Android Studio build number under **Help > About** (or **Android Studio > About** on macOS) before installing.
+The plugin requires build `223` or later and has no upper build limit. Check your Android Studio build number under **Help > About** (or **Android Studio > About** on macOS) before installing. Future Android Studio versions are allowed by the plugin metadata, but may still require updates if they introduce incompatible platform changes.
 
 ### Get the plugin archive
 

@@ -7,13 +7,13 @@ plugins {
 }
 
 group = "com.decathlon.cis"
-version = "1.0.6"
+version = "1.0.7"
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
 
     intellijPlatform {
-        intellijIdea("2026.2.1")
+        intellijIdea("2022.3.3")
         testFramework(TestFrameworkType.Platform)
     }
 }
@@ -21,8 +21,7 @@ dependencies {
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
-            sinceBuild.set("262")
-            untilBuild.set("262.*")
+            sinceBuild.set("223")
         }
     }
 }

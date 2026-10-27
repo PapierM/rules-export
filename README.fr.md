@@ -8,7 +8,7 @@ Ce plugin permet d'**exporter et d'importer les règles (rules) du Network Inspe
 
 ## Installation
 
-La configuration actuelle du plugin cible les IDE de la branche de build `262` (`262.*`). Vérifiez le numéro de build de votre Android Studio dans **Help > About** (ou **Android Studio > About** sur macOS) avant l'installation.
+Le plugin nécessite le build `223` ou ultérieur et n'a pas de limite supérieure de build. Vérifiez le numéro de build de votre Android Studio dans **Help > About** (ou **Android Studio > About** sur macOS) avant l'installation. Les futures versions d'Android Studio sont autorisées par les métadonnées du plugin, mais une mise à jour peut rester nécessaire si elles introduisent des changements incompatibles de la plateforme.
 
 ### Obtenir l'archive du plugin
 
